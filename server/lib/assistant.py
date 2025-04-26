@@ -26,50 +26,51 @@ class Assistant(utils.Mode):
         else:
             self.system_prompt = "TODO"
 
-            # This is what is sent to Anthropic
-            message = self.client.messages.create(
+        # This is what is sent to Anthropic
+        message = self.client.messages.create(
+            model=constants.compilation_model,
+            max_tokens=constants.compilation_max_tokens,
+            system=self.system_prompt,
+            messages=[
+                {"role": "user", "content": user_message},
+            ],
+            tool_choice="auto"
+        )
+
+        first = cast(anthropic.types.TextBlock, message.content[0])
+        if first["type"] == "tool_use":
+            tool_name   = first["name"]
+            tool_input  = first["input"]
+            tool_use_id = first["id"]
+    
+            tool_result = claude_tools.run_tool(tool_name, tool_input)
+
+            self.client.messages.create(
                 model=constants.compilation_model,
                 max_tokens=constants.compilation_max_tokens,
                 system=self.system_prompt,
                 messages=[
-                    {"role": "user", "content": user_message},
-                ],
-                tool_choice="auto"
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": tool_use_id,
+                                "content": tool_result
+                            }
+                        ]
+                    }
+                ]
             )
+            final_block = cast(anthropic.types.TextBlock, message.content[0])
+        else:
+            # no tool was needed—just use the original
+            final_block = first
 
-            content = cast(anthropic.types.TextBlock, message.content[0])
-            if content["type"] == "tool_use":
-                tool_name = content["name"]
-                tool_input = content["input"]
-                tool_use_id = content["id"]
-        
-                tool_result = claude_tools(tool_name, tool_input)
-
-                self.client.messages.create(
-                    model=constants.compilation_model,
-                    max_tokens=constants.compilation_max_tokens,
-                    system=self.system_prompt,
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {
-                                    "type": "tool_result",
-                                    "tool_use_id": tool_use_id,
-                                    "content": tool_result
-                                }
-                            ]
-                        }
-                    ]
-                )
-            else:
-                content = cast(anthropic.types.TextBlock, content)
-
-        followup = cast(anthropic.types.TextBlock, message.content[0])
-        final_block = followup.content[0]
+        # 4) Now extract the plain‐text
         if final_block["type"] == "text":
             final_text = final_block["text"]
         else:
-            raise RuntimeError(f"Unexpected block type: {final_block['type']}")
+            raise RuntimeError(f"Expected text but got {final_block['type']}")
 
-        #TODO ADD text to MP3
+        return final_block
