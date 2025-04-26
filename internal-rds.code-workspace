@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "distributor"
+    },
+    {
+      "path": "web"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:distributor}/venv/bin/python3.12"
+  }
+}
