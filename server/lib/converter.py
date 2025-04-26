@@ -1,15 +1,7 @@
-from typing import Optional, Union, cast
 from whisper import Whisper
-import os
-import sys
-import contextlib
 from termcolor import colored
 import inquirer
 import whisper
-import pyaudio
-from pynput import keyboard as pynput_keyboard
-import wave
-import constants
 
 model = whisper.load_model("base")
 

@@ -1,9 +1,6 @@
 import inquirer
 from termcolor import colored
 from lib.load import preflight
-from lib import utils
-from lib.input import Input
-from lib.modes import inquisitive, compilation
 from lib import converter
 
 
