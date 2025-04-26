@@ -18,7 +18,7 @@ export const ActionPreset = ({ name, description }: ActionPresetProps) => {
             </div>
           </Badge>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="w-64">
           <p>{description}</p>
         </TooltipContent>
       </Tooltip>

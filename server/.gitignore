@@ -5,3 +5,4 @@ venv/
 *.mp3
 hem.db
 db/data/*
+test.py

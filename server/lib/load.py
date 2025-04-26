@@ -2,7 +2,14 @@ from dotenv import load_dotenv
 import os
 from lib.processor import Processor
 
-vars = ["ANTHROPIC_API_KEY", "ADMIN_API_KEY"]
+vars = [
+    "ANTHROPIC_API_KEY",
+    "ADMIN_API_KEY",
+    "OPEN_WEATHER_API_KEY",
+    "ELEVEN_LABS_API_KEY",
+    "APLHA_VANTAGE_KEY",
+    "MARKET_STACK_API_KEY",
+]
 
 def preflight():
     """Check for missing environment variables."""

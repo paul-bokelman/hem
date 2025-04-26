@@ -1,9 +1,10 @@
 from typing import cast
-from anthropic.types import MessageParam, ToolUseBlockParam
+from anthropic.types import MessageParam
 import os
-from lib.actions import Actions
 import anthropic
 from globals import constants
+from lib.actions import Actions
+from db.utils import get_user_macros
 
 actions = Actions() # initialize the Actions class (singleton)
 
@@ -28,8 +29,21 @@ class Processor:
 
     def handle_message(self, user_id: str, user_prompt: str) -> tuple[str, list[str]]:
         """Handles an incoming message from a specific user and returns a text response and a list of actions performed."""
-        messages: list[MessageParam] = [{"role": "user", "content": user_prompt}]
+        messages: list[MessageParam] = [
+            {"role": "user", "content": user_prompt}
+        ]
+
         actions_performed: list[str] = []
+
+        # load user macros for initial context
+        macros = get_user_macros(user_id)
+        if macros:
+            macros_context = f"<user_macros>"
+            for macro in macros:
+                formatted_macro = f"[{macro.name}]\nPrompt: {macro.prompt}\nRequired Tools: {', '.join(macro.required_actions)}\nAllow Other Tools: {macro.allow_other_actions}"
+                macros_context += f"\n{formatted_macro}\n"
+            macros_context += "</user_macros>"
+            messages.insert(0, {"role": "user", "content": macros_context})
 
         while True:
             response = self.client.messages.create(
@@ -39,13 +53,19 @@ class Processor:
                 messages=messages,
                 tools=actions.action_schemas,
             )
+
+            print(response)
+
             text_block = next((item for item in response.content if item.type == "text"), None)
             tool_block = next((item for item in response.content if item.type == "tool_use"), None)
 
             # requested tool use -> use tool and append result to messages
             if tool_block:
                 actions_performed.append(tool_block.name)
-                action_result = actions.execute(tool_block.name, cast(dict, tool_block.input))
+                try:
+                    action_result = actions.execute(tool_block.name, cast(dict, tool_block.input))
+                except Exception as e:
+                    action_result = {"error": str(e)}
 
                 previous_message = {"role": "assistant", "content": []}
 

@@ -2,14 +2,12 @@ from typing import cast, Callable, Union, Tuple
 from urllib.parse import quote_plus
 from anthropic.types import ToolParam, TextBlockParam
 import os
+import json
 import requests
 from datetime import datetime
 
-# Existing types
-
 type ExecutableActionResponse = Union[str, list[TextBlockParam]]
 type ExecutableAction = Callable[..., ExecutableActionResponse]
-
 
 class Actions:
     """Handles the registration and execution of actions."""
@@ -104,7 +102,7 @@ class Actions:
 
     def get_time(self) -> ExecutableActionResponse:
         now = datetime.now()
-        return [TextBlockParam(type="text", text=now.strftime("%H:%M:%S"))]
+        return now.strftime("%H:%M:%S")
 
     get_time.__action__ = ToolParam(
         name="get_time",
@@ -120,7 +118,7 @@ class Actions:
 
     def get_date(self) -> ExecutableActionResponse:
         today = datetime.now()
-        return [TextBlockParam(type="text", text=today.strftime("%Y-%m-%d"))]
+        return today.strftime("%Y-%m-%d")
 
     get_date.__action__ = ToolParam(
         name="get_date",
@@ -133,7 +131,7 @@ class Actions:
     )
     # ------------------------------ get_stock_info ------------------------------ #
 
-    def get_stock_info(self, tickers: list[str]) -> dict:
+    def get_stock_info(self, tickers: list[str]) -> ExecutableActionResponse:
         """
         Retrieves current stock prices and related financial data for a list of provided stock tickers.
         """
@@ -143,7 +141,7 @@ class Actions:
 
         url = "http://api.marketstack.com/v2/eod" + "?access_key=" + api_key + "&symbols="
         url += ",".join(tickers)
-        url += "&limit=1"
+        url += "&limit=5"
 
         try:
             response = requests.get(url, timeout=10)
@@ -152,7 +150,10 @@ class Actions:
             raise ValueError(f"Network error fetching stock data: {e}")
 
         data = response.json()
-        return data
+        if "error" in data:
+            raise ValueError(f"Error fetching stock data: {data['error']}")
+        
+        return [TextBlockParam(type="text", text=json.dumps(d)) for d in data['data']]
 
     get_stock_info.__action__ = ToolParam(
         name="get_stock_info",
@@ -161,6 +162,7 @@ class Actions:
             "Use when a user provides one or more stock symbols (e.g., ['AAPL', 'GOOG']). "
             "This tool fetches live stock market information and summarizes it for quick reference. "
             "Ticker symbols must be accurate as the tool does not auto-correct invalid inputs."
+            "A maximum of 5 tickers can be provided at once."
         ),
         input_schema={
             "type": "object",
@@ -177,7 +179,7 @@ class Actions:
 
         # ------------------------------ get_crypto_price ------------------------------ #
 
-    def get_crypto_price(self, coin: str, currency: str) -> dict:
+    def get_crypto_price(self, coin: str, currency: str) -> ExecutableActionResponse:
         """
         Fetches the live cryptocurrency price and metadata from Coingecko.
         """
@@ -197,7 +199,7 @@ class Actions:
         if not data:
             raise ValueError(f"No data found for coin '{coin}' in currency '{currency}'.")
 
-        return data[0]  # Coingecko returns a list
+        return [TextBlockParam(type="text", text=f"{key}: {value}") for key, value in data[0].items()]
 
     get_crypto_price.__action__ = ToolParam(
         name="get_crypto_price",

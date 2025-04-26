@@ -1,41 +1,38 @@
 # python -m db.seed
-import os
-import csv
 from peewee import IntegrityError
 from db.models import db, Action
+from lib.actions import Actions
 
-CSV_FILE = os.path.join(os.path.dirname(__file__), 'data/actions-seed.csv')
-
-def seed_actions_from_csv(csv_path=CSV_FILE):
-    """Read actions-seed.csv and upsert into the Action table."""
+def seed_actions_from_registry():
+    """Seed the Action table using the action registry from the Actions class."""
     created = 0
     updated = 0
-    
-    # read and iterate over the CSV file
-    with open(csv_path, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
+
+    # Get the action registry from the Actions class
+    actions = Actions().action_registry
 
     with db.atomic():
-        for row in rows:
-            name = row['name'].strip()
-            description = row['description'].strip()
+        for action_name, action_func in actions.items():
+            # Extract the description from the action's metadata
+            action_metadata = getattr(action_func, "__action__", {})
+            description = action_metadata.get("description", "").strip()
 
             try:
+                # Insert or update the action in the database
                 action, was_created = Action.get_or_create(
-                    name=name,
-                    defaults={'description': description}
+                    name=action_name.replace('_', ' ').title(),
+                    defaults={"description": description}
                 )
                 if was_created:
                     created += 1
                 else:
-                    # update description if changed
+                    # Update the description if it has changed
                     if action.description != description:
                         action.description = description
                         action.save()
                         updated += 1
             except IntegrityError:
-                # skip any unexpected unique constraint issues
+                # Skip any unexpected unique constraint issues
                 continue
 
     print(f"✅ {created} new actions created, {updated} actions updated.")
@@ -43,5 +40,5 @@ def seed_actions_from_csv(csv_path=CSV_FILE):
 if __name__ == "__main__":
     db.connect(reuse_if_open=True)
     db.create_tables([Action], safe=True)
-    seed_actions_from_csv()
+    seed_actions_from_registry()
     db.close()

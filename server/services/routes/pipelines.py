@@ -11,7 +11,7 @@ processor_singleton = processor.Processor() # initialize the Processor class (si
 
 @pipeline_bp.route('/respond', methods=['POST'])
 def response_pipeline():
-    user = get_user_from_header()
+    user_id = get_user_from_header()
 
     # ----------------------------- transcribe audio ----------------------------- #
 
@@ -37,7 +37,7 @@ def response_pipeline():
 
     # ------------------------- process message with llm ------------------------- #
 
-    response, actions_performed = processor_singleton.handle_message(user, transcription)
+    response, actions_performed = processor_singleton.handle_message(user_id, transcription)
 
     # -------------------- convert back to audio and send back ------------------- #
 

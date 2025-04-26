@@ -155,7 +155,7 @@ export const MacroDialogContent = () => {
                 <FormLabel>Prompt</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="A prompt explaining what you want the macro to do. Ex: 'Tell me about crypto and stock prices and add the data to my google spreadsheet.'"
+                    placeholder="A prompt explaining what you want the macro to do. Ex: 'Tell me about crypto and stock prices then general economics trends from your own knowledge'"
                     className="min-h-32"
                     {...field}
                   />
