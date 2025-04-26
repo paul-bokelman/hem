@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 
-vars = ["ANTHROPIC_API_KEY"]
+vars = ["ANTHROPIC_API_KEY", "ADMIN_API_KEY"]
 
 def preflight():
     """Check for missing environment variables."""
