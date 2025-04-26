@@ -19,6 +19,10 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+      <head>
+        <title>Hem</title>
+        <meta name="description" content="Effortless Control, Infinite Possibility — Your Home, Your Way." />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryClientProvider client={qc}>
           <UserProvider>
