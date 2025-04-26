@@ -4,41 +4,19 @@ from lib.load import preflight
 from lib import utils
 from lib.input import Input
 from lib.modes import inquisitive, compilation
+from lib import converter
 
-preflight()
 
-# header
-print(f"\n{colored('Fathom', 'light_magenta', attrs=['bold', 'underline'])} {colored('— Understand efficiently.', 'dark_grey')}\n")
+# Create or read in an mp3
+transcription = converter.transcribe("fuck.mp3")
+print("Here!")
+print(transcription)
 
-user_input = Input()
+# create a message 
 
-# initialize modes with user input
-modes: dict[str, tuple[utils.Mode, str]] = {
-    "Inquisitive": (inquisitive.Inquisitive(user_input), "be asked complex but concise questions"),
-    "Compilation": (compilation.Compilation(user_input), "speak and have your thoughts compiled into notes"),
-    # "Argumentative" -> future mode that will argue with the user to test their knowledge
-}
 
-# mode selection loop (main loop)
-try:
-    while True:
-        mode_selection_question = [
-            inquirer.List('mode',
-                            message="Select mode",
-                            choices=[utils.compose_q(key, value[1]) for key, value in modes.items()],
-                        ),
-        ]
+# send message to Anthropic
 
-        # mode selection
-        mode_selection_answers = inquirer.prompt(mode_selection_question, raise_keyboard_interrupt=True)
-        assert mode_selection_answers is not None
-        mode, _ = utils.decompose_q(mode_selection_answers["mode"])
+# Recieve response from anthropic 
 
-        if mode not in modes:
-            print("\nInvalid mode selection. Please try again.")
-            continue
-
-        modes[mode][0].run()
-except KeyboardInterrupt:
-    print(f"\nThank you for using {colored('Fathom', 'light_magenta')}.")
-    exit(0)
+# React to resonse 

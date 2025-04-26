@@ -17,9 +17,9 @@ inquisitive_model: ModelParam = 'claude-3-haiku-20240307' # model to use for inq
 
 # -------------------------------- compilation ------------------------------- #
 compilation_max_tokens = 8192 # maximum number of tokens to generate (compilation mode)
-compilation_template = 'basic-notes.md' # template under /templates or None
+compilation_template = 'response.md' # template under /templates or None
 compilation_max_audio_length = None # maximum length of audio recording (compilation mode) (defaults to 30m)
-compilation_output_path = 'notes' # output path for compilation mode
+compilation_output_path = 'transcription' # output path for compilation mode
 compilation_model: ModelParam = 'claude-3-5-sonnet-latest' # model to use for compilation mode (note: different models require different max tokens)
 
 # ---------------------------------- audio ---------------------------------- #
