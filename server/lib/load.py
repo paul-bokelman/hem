@@ -9,7 +9,6 @@ vars = [
     "ELEVEN_LABS_API_KEY",
     "APLHA_VANTAGE_KEY",
     "MARKET_STACK_API_KEY",
-    "DATABASE_URL"
 ]
 
 def preflight():

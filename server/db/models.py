@@ -2,8 +2,13 @@ from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, U
 import os
 from uuid import uuid4
 
-# db = SqliteDatabase(os.getenv("DATABASE_URL"))
-db = MySQLDatabase(os.getenv("DATABASE_URL"))
+db = MySQLDatabase(
+    os.getenv("MYSQLDATABASE", "railway"),
+    user=os.getenv("MYSQLUSER", "root"),
+    password=os.getenv("MYSQLPASSWORD", "hVOFYvCKTUaVNvbbzkzVaNoaiWnANUPm"),
+    host=os.getenv("MYSQLHOST", "localhost"),
+    port=int(os.getenv("MYSQLPORT", 3306))  # Default MySQL port
+)
 
 class BaseModel(Model):
     class Meta:
