@@ -4,7 +4,7 @@ import os
 from termcolor import colored
 import anthropic
 import constants
-from lib import utils
+from lib import utils 
 
 class Compilation(utils.Mode):
     """Compilation Mode: Speak and have your thoughts compiled into notes."""
