@@ -7,3 +7,4 @@
 ## Questions
 
 +Generate some thought provoking questions based on the notes+
+ fuck you
