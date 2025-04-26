@@ -3,3 +3,5 @@ __pycache__/
 venv/
 *.wav
 *.mp3
+hem.db
+db/data/*
