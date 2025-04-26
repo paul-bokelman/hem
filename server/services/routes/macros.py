@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, request
 from db.models import Macro, MacroAction, Action
-from services.routes.utility import get_user_from_header
+from services.utils import get_user_from_header
 
 macros_bp = Blueprint('macros', __name__)
 
