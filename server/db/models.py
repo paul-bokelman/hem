@@ -1,8 +1,8 @@
 from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, UUIDField, SqliteDatabase
-from globals import constants
+import os
 from uuid import uuid4
 
-db = SqliteDatabase(constants.database_name)
+db = SqliteDatabase(os.getenv("DATABASE_URL"))
 
 class BaseModel(Model):
     class Meta:

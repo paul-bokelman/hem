@@ -1,6 +1,4 @@
-import os
 from flask import Flask
-from globals import constants
 from lib.load import preflight
 from db.models import db, User, Action, Macro, MacroAction, UserAction
 from services.routes.users import users_bp
@@ -13,7 +11,6 @@ preflight()
 
 app = Flask(__name__)
 CORS(app)
-os.makedirs(constants.upload_folder, exist_ok=True)
 
 # create the database tables if they don't exist
 with db:
