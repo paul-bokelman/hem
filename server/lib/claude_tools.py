@@ -4,20 +4,23 @@ import os
 import requests
 import inspect
 from typing import Any, Callable, Dict, List
+from dotenv import load_dotenv
+
 
 
 class ClaudeTools:
     """
     Registry for Claude-compatible tools.
     """
+load_dotenv()   # reads .env in cwd and updates os.environ
 
-    def __init__(self):
-        # Discover methods decorated with __tool__ metadata
-        self._tool_funcs: Dict[str, Callable[..., Any]] = {}
-        for _, method in inspect.getmembers(self, predicate=inspect.ismethod):
-            if hasattr(method, "__tool__"):
-                meta = method.__tool__
-                self._tool_funcs[meta["name"]] = method
+def __init__(self):
+    # Discover methods decorated with __tool__ metadata
+    self._tool_funcs: Dict[str, Callable[..., Any]] = {}
+    for _, method in inspect.getmembers(self, predicate=inspect.ismethod):
+        if hasattr(method, "__tool__"):
+            meta = method.__tool__
+            self._tool_funcs[meta["name"]] = method
 
     @staticmethod
     def tool(name: str, description: str, input_schema: dict):

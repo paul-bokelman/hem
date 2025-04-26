@@ -1,13 +1,11 @@
 from typing import cast
 import os
 import claude_tools
-from templates import response
 from termcolor import colored
 import anthropic
 import constants
 from lib import utils
 from lib.converter import transcribe
-import lib.converter as converter
 
 
 class Assistant(utils.Mode):
