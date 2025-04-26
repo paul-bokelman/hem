@@ -10,58 +10,17 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
-import { ActionPreset, Macro, MacroDialogContent } from "@/partial/dashboard";
+import { ActionPreset, Macro, MacroDialogContent } from "@/partials/dashboard";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { CircleHelp, Fingerprint, Plus } from "lucide-react";
+import { CircleHelp, Fingerprint, Loader, Plus } from "lucide-react";
 import Link from "next/link";
+import { useUser } from "@/partials/user-context";
+import { useUserMacros, useActions } from "@/hooks/api";
 
 const Dashboard = () => {
-  const presetActions = [
-    {
-      name: "Weather",
-      description: "Get the current condition and forecast for a location.",
-    },
-    {
-      name: "Time",
-      description: "Retrieve the current time for a specific timezone.",
-    },
-    {
-      name: "Date",
-      description: "Retrieve today's date in a specific format.",
-    },
-    {
-      name: "Stock Prices",
-      description: "Fetch the latest stock prices for a given company.",
-    },
-    {
-      name: "Crypto Prices",
-      description: "Retrieve the current prices of popular cryptocurrencies.",
-    },
-    {
-      name: "Sports Scores",
-      description: "Get the latest scores and updates for your favorite sports.",
-    },
-    {
-      name: "Exchange Rates",
-      description: "Fetch the latest currency exchange rates.",
-    },
-  ];
-
-  const macros = [
-    {
-      name: "Morning",
-      prompt: "Give me a morning info summary for today.",
-      requiredActions: ["Weather", "Time", "Date"],
-      allowOtherActions: false,
-    },
-    {
-      name: "Assets and Portfolio",
-      prompt:
-        "Tell me about the state of the stock and crypto market. Additionally, tell me if my portfolio is doing well.",
-      requiredActions: ["Stock Prices", "Crypto Prices"],
-      allowOtherActions: true,
-    },
-  ];
+  const { user } = useUser();
+  const { data: actions, isLoading: actionsLoading, isError: actionsError } = useActions();
+  const { data: macros, isLoading: macrosLoading, isError: macrosError } = useUserMacros(user?.id || "");
 
   return (
     <div className="flex flex-col pt-32 pb-16">
@@ -81,7 +40,7 @@ const Dashboard = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <Fingerprint className="text-muted-foreground size-4" />
-          <span className="text-muted-foreground text-sm">3e82de6a-234c-4cd2-a687-1537ef659273</span>
+          <span className="text-muted-foreground text-sm">{user?.id || "unknown"}</span>
         </div>
         <div className="flex flex-col gap-2 mt-4">
           <div className="flex items-center justify-between">
@@ -104,9 +63,18 @@ const Dashboard = () => {
           </div>
           <p className="text-muted-foreground text-sm">Built-in actions we provide to build your own macros.</p>
           <div className="flex items-center gap-2 flex-wrap border border-dashed rounded-md p-2 bg-background">
-            {presetActions.map((action) => (
-              <ActionPreset key={action.name} name={action.name} description={action.description} />
-            ))}
+            {actionsLoading ? (
+              <div className="text-muted-foreground text-sm flex items-center gap-2">
+                <Loader className="animate-spin size-4" />
+                Loading actions...
+              </div>
+            ) : actionsError ? (
+              <div className="text-red-500 text-sm">Failed to load actions. Please try again later.</div>
+            ) : (
+              actions?.map((action) => (
+                <ActionPreset key={action.name} name={action.name} description={action.description} />
+              ))
+            )}
           </div>
         </div>
         <Dialog>
@@ -165,9 +133,20 @@ const Dashboard = () => {
             </DialogContent>
           </Dialog>
           <div className="mt-2 flex flex-col gap-4">
-            {macros.map((macro) => (
-              <Macro key={macro.name} {...macro} />
-            ))}
+            {macrosLoading ? (
+              <div className="text-muted-foreground text-sm flex items-center gap-2">
+                <Loader className="animate-spin size-4" />
+                Loading macros...
+              </div>
+            ) : macrosError ? (
+              <div className="text-red-500 text-sm">Failed to load macros. Please try again later.</div>
+            ) : macros?.length === 0 ? (
+              <div className="text-muted-foreground text-sm">
+                No macros found. Create your first macro to get started!
+              </div>
+            ) : (
+              macros?.map((macro) => <Macro key={macro.name} {...macro} />)
+            )}
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ def create_macro():
         MacroAction.create(macro=m, action=act)
     return jsonify({'id': m.id, 'name': m.name}), 201
 
-@macros_bp.route('/macros/<int:macro_id>', methods=['PUT'])
+@macros_bp.route('/macros/<string:macro_id>', methods=['PUT'])
 def edit_macro(macro_id):
     user = get_user_from_header()
     m = Macro.get_or_none(Macro.id == macro_id)
@@ -51,7 +51,7 @@ def edit_macro(macro_id):
             MacroAction.create(macro=m, action=act)
     return jsonify({'id': m.id, 'name': m.name})
 
-@macros_bp.route('/macros/<int:macro_id>', methods=['DELETE'])
+@macros_bp.route('/macros/<string:macro_id>', methods=['DELETE'])
 def delete_macro(macro_id):
     user = get_user_from_header()
     m = Macro.get_or_none(Macro.id == macro_id)
