@@ -1,8 +1,9 @@
-from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, UUIDField, SqliteDatabase
+from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, UUIDField, MySQLDatabase, SqliteDatabase
 import os
 from uuid import uuid4
 
-db = SqliteDatabase(os.getenv("DATABASE_URL"))
+# db = SqliteDatabase(os.getenv("DATABASE_URL"))
+db = MySQLDatabase(os.getenv("DATABASE_URL"))
 
 class BaseModel(Model):
     class Meta:
