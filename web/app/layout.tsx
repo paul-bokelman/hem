@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+"use client";
+// import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { QueryClientProvider } from "react-query";
 import { Toaster } from "@/components/ui/sonner";
+import { UserProvider } from "@/partials/user-context";
+import "./globals.css";
+import { qc } from "@/lib/qc";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,19 +17,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Hem",
-  description: "Home assistant beast",
-};
+// export const metadata: Metadata = {
+//   title: "Hem",
+//   description: "Effortless Control, Infinite Possibility — Your Home, Your Way.",
+// };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="lg:w-120 lg:px-0 px-8 mx-auto h-screen flex flex-col items-center bg-background">
-          {children}
-        </div>
-        <Toaster />
+        <QueryClientProvider client={qc}>
+          <UserProvider>
+            <div className="lg:w-120 lg:px-0 px-8 mx-auto h-screen flex flex-col items-center bg-background">
+              {children}
+            </div>
+          </UserProvider>
+          <Toaster />
+        </QueryClientProvider>
       </body>
     </html>
   );

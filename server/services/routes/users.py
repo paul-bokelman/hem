@@ -4,6 +4,15 @@ from db.models import User
 
 users_bp = Blueprint('users', __name__)
 
+@users_bp.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    """Retrieve a user by their ID."""
+    try:
+        u = User.get(User.id == uuid.UUID(user_id))
+    except Exception:
+        abort(404)
+    return jsonify({'id': str(u.id)})
+
 @users_bp.route('/users', methods=['POST'])
 def create_user():
     u = User.create(id=uuid.uuid4())

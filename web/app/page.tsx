@@ -1,6 +1,8 @@
 "use client";
 
+import React from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import {
   Dialog,
   DialogTrigger,
@@ -10,7 +12,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { CircleHelp } from "lucide-react";
-import Link from "next/link";
 
 const AudioRecorderComponent = dynamic(() => import("@/components/audio-recorder"), {
   ssr: false,
