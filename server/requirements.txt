@@ -36,6 +36,7 @@ packaging==25.0
 peewee==3.17.9
 pydantic==2.11.3
 pydantic_core==2.33.1
+PyMySQL==1.1.1
 python-dotenv==1.1.0
 readchar==4.2.1
 regex==2024.11.6
