@@ -1,5 +1,4 @@
 "use client";
-// import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientProvider } from "react-query";
 import { Toaster } from "@/components/ui/sonner";
@@ -16,11 +15,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-// export const metadata: Metadata = {
-//   title: "Hem",
-//   description: "Effortless Control, Infinite Possibility — Your Home, Your Way.",
-// };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
