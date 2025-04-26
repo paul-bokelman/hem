@@ -1,7 +1,10 @@
+import React from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
+import { useUser } from "@/partials/user-context";
 import { toast } from "sonner";
 
-export const useAudioRecorder = (uploadUrl: string) => {
+export const useAudioRecorder = () => {
+  const { user } = useUser();
   const { startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } = useReactMediaRecorder({
     audio: true,
     onStop: async (blobUrl, blob) => {
@@ -10,24 +13,28 @@ export const useAudioRecorder = (uploadUrl: string) => {
         formData.append("file", blob, "recording.webm");
 
         toast.promise(
-          fetch(uploadUrl, {
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/respond`, {
             method: "POST",
             body: formData,
+            headers: { "X-User-ID": user?.id || "" },
           }).then((response) => {
             if (!response.ok) {
               throw new Error("Failed to upload audio");
             }
-            return response;
+
+            response.blob().then((audioBlob) => {
+              const audioUrl = URL.createObjectURL(audioBlob);
+              setProcessedAudioUrl(audioUrl);
+            });
           }),
           {
-            loading: "Uploading audio...",
-            success: "Audio uploaded successfully!",
-            error: "Audio upload failed. Please try again.",
+            loading: "Uploading and processing audio...",
+            error: "Audio processing failed. Please try again.",
           }
         );
       }
     },
   });
-
-  return { startRecording, stopRecording, mediaBlobUrl, clearBlobUrl };
+  const [processedAudioUrl, setProcessedAudioUrl] = React.useState<string | null>(null);
+  return { startRecording, stopRecording, mediaBlobUrl, clearBlobUrl, processedAudioUrl };
 };

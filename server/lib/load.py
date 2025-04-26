@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from lib.processor import Processor
 
 vars = ["ANTHROPIC_API_KEY", "ADMIN_API_KEY"]
 

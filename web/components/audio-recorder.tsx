@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mic } from "lucide-react";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 
 const AudioRecorder = () => {
-  const [isRecording, setIsRecording] = React.useState(false);
-  const { startRecording, stopRecording, mediaBlobUrl } = useAudioRecorder("http://localhost:5000/upload");
+  const [isRecording, setIsRecording] = useState(false);
+  const { startRecording, stopRecording, processedAudioUrl } = useAudioRecorder();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleRecord = () => {
@@ -19,11 +19,15 @@ const AudioRecorder = () => {
   };
 
   useEffect(() => {
-    if (mediaBlobUrl && audioRef.current) {
-      audioRef.current.load();
-      audioRef.current.play();
-    }
-  }, [mediaBlobUrl]);
+    const playAudio = async () => {
+      if (processedAudioUrl && audioRef.current) {
+        audioRef.current.src = processedAudioUrl;
+        audioRef.current.load();
+        await audioRef.current.play();
+      }
+    };
+    playAudio();
+  }, [processedAudioUrl]);
 
   return (
     <div className="mt-2 w-fit flex flex-col items-start gap-2">
@@ -36,11 +40,9 @@ const AudioRecorder = () => {
         {isRecording ? "Stop Recording" : "Record"}
       </Button>
 
-      {mediaBlobUrl && (
-        <audio ref={audioRef} src={mediaBlobUrl} className="w-full hidden">
-          Your browser does not support the audio element.
-        </audio>
-      )}
+      <audio ref={audioRef} className="w-full hidden">
+        Your browser does not support the audio element.
+      </audio>
     </div>
   );
 };
