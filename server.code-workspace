@@ -5,6 +5,6 @@
     }
   ],
   "settings": {
-    "python.defaultInterpreterPath": "${workspaceFolder:server}/venv/bin/python3.12"
+    "python.defaultInterpreterPath": "${workspaceFolder:server}/venv/bin/python"
   }
 }

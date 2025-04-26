@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "server"
+    },
+    {
+      "path": "web"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:server}/venv/bin/python3.12"
+  }
+}
