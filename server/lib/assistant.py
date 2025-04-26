@@ -37,7 +37,7 @@ class Assistant(utils.Mode):
             tool_choice="auto"
         )
 
-        first = cast(anthropic.types.TextBlock, message.content[0])
+        first = message.content[0]
         if first["type"] == "tool_use":
             tool_name   = first["name"]
             tool_input  = first["input"]
@@ -45,7 +45,7 @@ class Assistant(utils.Mode):
     
             tool_result = claude_tools.run_tool(tool_name, tool_input)
 
-            self.client.messages.create(
+            second_message =self.client.messages.create(
                 model=constants.compilation_model,
                 max_tokens=constants.compilation_max_tokens,
                 system=self.system_prompt,
@@ -62,7 +62,7 @@ class Assistant(utils.Mode):
                     }
                 ]
             )
-            final_block = cast(anthropic.types.TextBlock, message.content[0])
+            final_block = second_message.content[0]
         else:
             # no tool was needed—just use the original
             final_block = first
