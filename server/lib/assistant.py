@@ -1,5 +1,4 @@
 from typing import cast
-from lib.input import Input
 import os
 import claude_tools
 from templates import response
@@ -7,20 +6,17 @@ from termcolor import colored
 import anthropic
 import constants
 from lib import utils
+from lib.converter import transcribe
 import lib.converter as converter
 
 
 class Assistant(utils.Mode):
     """Compilation Mode: Speak and let athronpic compile your thoughts into actions."""
-    def __init__(self, input: Input) -> None:
+    #as of now param input = mp3
+    def __init__(self, input: input) -> None:
         self.input = input
-
-        # create output directory if it doesn't exist
-        #TODO check if we need this or go direct to MP3
-        if not os.path.exists(constants.compilation_output_path):
-            os.makedirs(constants.compilation_output_path)
-
         self.client = anthropic.Anthropic()
+        user_message = transcribe(input)
 
         if constants.compilation_template is not None:
             # parse compilation template
@@ -30,14 +26,13 @@ class Assistant(utils.Mode):
         else:
             self.system_prompt = "TODO"
 
-        try:
             # This is what is sent to Anthropic
             message = self.client.messages.create(
                 model=constants.compilation_model,
                 max_tokens=constants.compilation_max_tokens,
                 system=self.system_prompt,
                 messages=[
-                    {"role": "user", "content": response},
+                    {"role": "user", "content": user_message},
                 ],
                 tool_choice="auto"
             )
@@ -69,7 +64,12 @@ class Assistant(utils.Mode):
                 )
             else:
                 content = cast(anthropic.types.TextBlock, content)
+
+        followup = cast(anthropic.types.TextBlock, message.content[0])
+        final_block = followup.content[0]
+        if final_block["type"] == "text":
+            final_text = final_block["text"]
+        else:
+            raise RuntimeError(f"Unexpected block type: {final_block['type']}")
+
         #TODO ADD text to MP3
-        except:
-            print(colored("\nAn error occurred. Please try again.\n", "red"))
-            pass
