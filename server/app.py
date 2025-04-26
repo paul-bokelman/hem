@@ -11,7 +11,7 @@ from flask_cors import CORS
 preflight()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[os.getenv("CLIENT_URL", "http://localhost:3000")], supports_credentials=True)
 
 def init_db():
     """Initialize the database and create tables if they don't exist."""
