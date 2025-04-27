@@ -121,3 +121,17 @@ make prod
 
 - Frontend: Vercel (hem.pab.dev)
 - Backend: Railway (server-hem.pab.dev)
+
+## Screenshots
+
+<sub>Homepage</sub>
+![Homepage](./static/hem-homepage.png)
+
+<sub>Homepage Recording</sub>
+![Homepage Recording](./static/hem-homepage-recording.png)
+
+<sub>Dashboard</sub>
+![Dashboard](./static/hem-dashboard.png)
+
+<sub>Dashboard</sub>
+![Dashboard](./static/hem-create-macro.png)
