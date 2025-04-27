@@ -42,15 +42,15 @@ export const Macro = ({ id, name, prompt, required_actions, allow_other_actions 
 
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="font-semibold">{name}</h3>
       <div className="flex flex-col gap-2 rounded-md border p-4 bg-muted-foreground/5">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h4 className="italic text-muted-foreground text-sm">Prompt</h4>
-            <Trash2 onClick={handleDelete} className="text-red-500 size-4 hover:text-red-600" />
-          </div>
-          <p className="">{prompt}</p>
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">{name}</h3>
+          <Trash2 onClick={handleDelete} className="text-red-500 size-4 hover:text-red-600" />
         </div>
+        <div className="flex flex-col gap-2">
+          <h4 className="italic text-muted-foreground text-sm">Prompt</h4>
+        </div>
+        <p className="">{prompt}</p>
         <div className="flex flex-col gap-2 mt-2">
           <h4 className="text-sm text-muted-foreground italic">Required Actions</h4>
           <div className="flex items-center gap-2 flex-wrap">

@@ -1,6 +1,7 @@
 "use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientProvider } from "react-query";
+import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/sonner";
 import { UserProvider } from "@/partials/user-context";
 import "./globals.css";
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="description" content="Effortless Control, Infinite Possibility — Your Home, Your Way." />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NextTopLoader color="#fff" />
         <QueryClientProvider client={qc}>
           <UserProvider>
             <div className="lg:w-120 lg:px-0 px-8 mx-auto h-screen flex flex-col items-center bg-background">
