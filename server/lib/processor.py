@@ -1,12 +1,13 @@
 from typing import cast
 from anthropic.types import MessageParam
-import os
 import anthropic
 from globals import constants
 from lib.actions import Actions
+from lib.prompts import Prompts
 from db.utils import get_user_macros
 
 actions = Actions() # initialize the Actions class (singleton)
+prompts = Prompts() 
 
 class Processor:
     """Compilation Mode: Speak and let anthropic compile your thoughts into actions."""
@@ -23,9 +24,16 @@ class Processor:
         self._initialized = True
         self.client = anthropic.Anthropic()
 
-        # load system prompt from file
-        with open(os.path.join("prompts", "system.prompt.txt"), "r") as file:
-            self.system_prompt = file.read()
+    @staticmethod
+    def _remove_enclosed_tag_data(text: str, tag: str) -> str:
+        """Remove all data enclosed in the specified tag from the text."""
+        start_tag = f"<{tag}>"
+        end_tag = f"</{tag}>"
+        while start_tag in text and end_tag in text:
+            start_index = text.index(start_tag)
+            end_index = text.index(end_tag) + len(end_tag)
+            text = text[:start_index] + text[end_index:]
+        return text
 
     def handle_message(self, user_id: str, user_prompt: str) -> tuple[str, list[str]]:
         """Handles an incoming message from a specific user and returns a text response and a list of actions performed."""
@@ -35,21 +43,15 @@ class Processor:
 
         actions_performed: list[str] = []
 
-        # load user macros for initial context
+        # load macros and generate system prompt
         macros = get_user_macros(user_id)
-        if macros:
-            macros_context = f"<user_macros>"
-            for macro in macros:
-                formatted_macro = f"[{macro.name}]\nPrompt: {macro.prompt}\nRequired Tools: {', '.join(macro.required_actions)}\nAllow Other Tools: {macro.allow_other_actions}"
-                macros_context += f"\n{formatted_macro}\n"
-            macros_context += "</user_macros>"
-            messages.insert(0, {"role": "user", "content": macros_context})
+        system_prompt = prompts.get_system_prompt(macros)
 
         while True:
             response = self.client.messages.create(
                 model=constants.model,
                 max_tokens=constants.max_tokens,
-                system=self.system_prompt,
+                system=system_prompt,
                 messages=messages,
                 tools=actions.action_schemas,
             )
@@ -87,4 +89,4 @@ class Processor:
                 
             # no tool use -> return llm final response
             else:
-                return (text_block.text if text_block else "", actions_performed)
+                return (Processor._remove_enclosed_tag_data(text_block.text, "input_analysis") if text_block else "", actions_performed)

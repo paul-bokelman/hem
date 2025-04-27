@@ -74,11 +74,11 @@ class Actions:
             min_temp = today.get("min")
             max_temp = today.get("max")
             return [TextBlockParam(type="text", text=(
-                f"{location.title()}: {desc}, {temp:.1f}°F (min {min_temp:.1f}°F, max {max_temp:.1f}°F)"
+                f"{location.title()}: {desc}, {temp:.1f} fahrenheit (min {min_temp:.1f} fahrenheit, max {max_temp:.1f} fahrenheit)"
             ))]
         else:
             return [TextBlockParam(type="text", text=(
-                f"{location.title()}: {desc}, {temp:.1f}°F"
+                f"{location.title()}: {desc}, {temp:.1f} fahrenheit"
             ))]
 
     get_weather.__action__ = ToolParam(
