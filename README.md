@@ -40,8 +40,8 @@ The backend is built with **Flask** and provides APIs for user management, macro
 
 2. **Audio Processing**:
 
-   - Converts audio commands to text using **OpenAI Whisper**.
-   - Converts text responses to audio using **Eleven Labs**.
+   - Converts audio commands to text using **Vosk**. The `audio_to_text` function in the backend leverages the Vosk speech recognition model to transcribe audio files into text.
+   - Converts text responses to audio using **Eleven Labs**. The `text_to_audio` function generates speech from text using Eleven Labs' API and returns the audio as an MP3 file.
 
 3. **Custom Actions and Macros**:
 
