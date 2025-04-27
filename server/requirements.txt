@@ -5,9 +5,11 @@ anyio==4.9.0
 blessed==1.20.0
 blinker==1.9.0
 certifi==2025.1.31
+cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
+cryptography==44.0.2
 distro==1.9.0
 editor==1.6.6
 elevenlabs==1.57.0
@@ -34,9 +36,10 @@ numpy==2.2.5
 openai-whisper==20240930
 packaging==25.0
 peewee==3.17.9
+psycopg2-binary==2.9.10
+pycparser==2.22
 pydantic==2.11.3
 pydantic_core==2.33.1
-PyMySQL==1.1.1
 python-dotenv==1.1.0
 readchar==4.2.1
 regex==2024.11.6

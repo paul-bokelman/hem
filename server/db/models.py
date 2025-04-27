@@ -1,14 +1,9 @@
-from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, UUIDField, MySQLDatabase, SqliteDatabase
+from playhouse.db_url import connect
+from peewee import Model, CharField, TextField, BooleanField, ForeignKeyField, UUIDField
 import os
 from uuid import uuid4
 
-db = MySQLDatabase(
-    os.getenv("MYSQLDATABASE", "railway"),
-    user=os.getenv("MYSQLUSER", "root"),
-    password=os.getenv("MYSQLPASSWORD", "hVOFYvCKTUaVNvbbzkzVaNoaiWnANUPm"),
-    host=os.getenv("MYSQLHOST", "localhost"),
-    port=int(os.getenv("MYSQLPORT", 3306))  # Default MySQL port
-)
+db = connect(os.getenv("DATABASE_URL", "sqlite:///hem.db"))
 
 class BaseModel(Model):
     class Meta:

@@ -1,7 +1,12 @@
 # python -m db.seed
 from peewee import IntegrityError
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from db.models import db, Action
 from lib.actions import Actions
+
 
 def seed_actions_from_registry():
     """Seed the Action table using the action registry from the Actions class."""

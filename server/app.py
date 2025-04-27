@@ -1,5 +1,5 @@
-from flask import Flask
 import os
+from flask import Flask
 from lib.load import preflight
 from db.models import db, User, Action, Macro, MacroAction, UserAction
 from services.routes.users import users_bp
