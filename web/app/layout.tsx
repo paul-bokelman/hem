@@ -1,5 +1,5 @@
 "use client";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inria_Serif } from "next/font/google";
 import { QueryClientProvider } from "react-query";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/sonner";
@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const inriaSerif = Inria_Serif({
+  variable: "--font-inria-serif",
+  subsets: ["latin"],
+  weight: ["700"],
+});
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -24,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <title>Hem</title>
         <meta name="description" content="Effortless Control, Infinite Possibility — Your Home, Your Way." />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inriaSerif.variable} antialiased`}>
         <NextTopLoader color="#fff" />
         <QueryClientProvider client={qc}>
           <UserProvider>

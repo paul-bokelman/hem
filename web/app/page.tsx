@@ -22,7 +22,7 @@ const Index = () => {
     <div className="-mt-6 flex flex-col w-full h-screen items-center justify-center ">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">Hem</h1>
+          <h1 className="text-3xl font-bold font-(family-name:--font-inria-serif)">Hem</h1>
 
           <Dialog>
             <DialogTrigger asChild>
