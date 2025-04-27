@@ -54,8 +54,6 @@ class Processor:
                 tools=actions.action_schemas,
             )
 
-            print(response)
-
             text_block = next((item for item in response.content if item.type == "text"), None)
             tool_block = next((item for item in response.content if item.type == "tool_use"), None)
 

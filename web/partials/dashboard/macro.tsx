@@ -54,11 +54,15 @@ export const Macro = ({ id, name, prompt, required_actions, allow_other_actions 
         <div className="flex flex-col gap-2 mt-2">
           <h4 className="text-sm text-muted-foreground italic">Required Actions</h4>
           <div className="flex items-center gap-2 flex-wrap">
-            {required_actions.map((action) => (
-              <Badge key={action.id} variant="outline" className="text-sm">
-                {action.name}
-              </Badge>
-            ))}
+            {required_actions.length > 0 ? (
+              required_actions.map((action) => (
+                <Badge key={action.id} variant="outline" className="text-sm">
+                  {action.name}
+                </Badge>
+              ))
+            ) : (
+              <p className="text-muted-foreground text-sm">No required actions specified.</p>
+            )}
           </div>
         </div>
         <div className="flex flex-row items-center gap-2 mt-2">

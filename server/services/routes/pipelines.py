@@ -3,6 +3,7 @@ import io
 from flask import Blueprint, request, jsonify, send_file
 from services.utils import get_user_from_header
 from lib import processor, conversions
+import pydub
 import tempfile
 
 pipeline_bp = Blueprint('pipeline', __name__)
@@ -29,11 +30,19 @@ def response_pipeline():
         tmp.flush()
         temp_file_path = tmp.name
 
-    # transcribe and remove temp audio file
+    # convert the audio to WAV format, mono channel, PCM encoding
+    audio = pydub.AudioSegment.from_file(temp_file_path)
+    audio = audio.set_channels(1)  # convert to mono
+    audio = audio.set_frame_rate(16000)  # set sample rate to 16 kHz
+    audio = audio.set_sample_width(2)  # set sample width to 16-bit (PCM)
+    wav_path = temp_file_path + ".wav"
+    audio.export(wav_path, format="wav", codec="pcm_s16le")  # export as PCM WAV
+
     try:
-        transcription = conversions.audio_to_text(temp_file_path)
+        transcription = conversions.audio_to_text(wav_path)
     finally:
         os.remove(temp_file_path)
+        os.remove(wav_path)
 
     # ------------------------- process message with llm ------------------------- #
 
@@ -49,4 +58,3 @@ def response_pipeline():
         as_attachment=False,
         download_name="response.wav"
     )
-

@@ -6,3 +6,4 @@ venv/
 hem.db
 db/data/*
 test.py
+tmp/

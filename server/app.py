@@ -1,14 +1,16 @@
 import os
+from lib.load import preflight, load_vosk_model
+
+preflight()
+load_vosk_model()
+
 from flask import Flask
-from lib.load import preflight
 from db.models import db, User, Action, Macro, MacroAction, UserAction
 from services.routes.users import users_bp
 from services.routes.macros import macros_bp
 from services.routes.actions import actions_bp
 from services.routes.pipelines import pipeline_bp
 from flask_cors import CORS
-
-preflight()
 
 app = Flask(__name__)
 CORS(app, origins=[os.getenv("CLIENT_URL", "http://localhost:3000")], supports_credentials=True)
